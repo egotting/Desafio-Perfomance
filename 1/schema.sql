@@ -49,22 +49,20 @@ ORDER BY total_faturado DESC;
 -- criação de indices, uso de CTE, uso de filtro para data de venda
 create index idx_vendas_filtros
 on vendas (status, data_venda, cliente_id);
-
-EXPLAIN ANALYZE
+explain analyze
 with vendas_filtradas as (
 	select cliente_id, valor_total
 	from vendas
 	where status = 'CONCLUIDA'
 	and data_venda between '2025-01-01' and '2025-12-31'
 )
-
 select c.cidade,
 	count(vf.cliente_id) as total_vendas,
 	sum(vf.valor_total) as total_faturado
-FROM vendas_filtradas vf
-JOIN clientes c ON vf.cliente_id = c.id
-GROUP BY c.cidade
-ORDER BY total_faturado DESC;
+from vendas_filtradas vf
+join clientes c ON vf.cliente_id = c.id
+group by c.cidade
+order by total_faturado DESC;
 
 -- resultado:
 --- antes:
